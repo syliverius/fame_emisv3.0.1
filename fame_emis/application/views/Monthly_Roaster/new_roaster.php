@@ -1,0 +1,137 @@
+<style>
+      /* Style for the table container */
+      .table-container {
+        width: 100%;
+        overflow-x: scroll;
+        margin-top: 20px;
+        position: relative;
+      }
+      
+      /* Style for the table */
+      table {
+        border-collapse: separate;
+        min-width: max-content;
+        width: max-content;
+      }
+      
+      table th{
+        position: sticky;
+        background: #CD5C5C;
+        text-align: center;
+        color: #fff;
+        border: 1px solid #ccc;
+        font-size: 16px;
+      }
+
+      table td{
+        background: #fff;
+        text-align: center;
+        border: 1px solid #ccc;
+      }
+
+      td:first-child,th:first-child{
+        position: sticky;
+        left: 0;
+        z-index: 2;
+      }
+</style>
+
+<div class="card">
+  <div class="card-body">
+    <div class="card-title text-center"><?= $data['month'];?> - <?= $data['year']; ?> <?= $this->hd->get_department_name($data['department_id'])->department_name; ?> DUTY ROSTER</div>
+    <form method="post" id="roaster">
+    <?php 
+     $i = 0;
+     foreach($data['shifts'] as $shifts){
+      if($i == 0){
+        echo '<i>'.$shifts->name.'</i> : <b>'.$shifts->abbreviation.'</b> ';
+      }else{
+        echo ' , '.'<i>'.$shifts->name.'</i> : <b>'.$shifts->abbreviation.'</b> ';
+
+      } $i++; ?>
+        <input type="text" name="" id="shifts" value="<?= $shifts->abbreviation; ?>" hidden>
+       <?php }
+    ?>
+    <div class="table-container">
+      <table>
+      <?php
+
+      //from the provided year and month let get the number of days
+      $year = $data['year'];
+      $month = $data['month'];
+
+      $date = new DateTime("$year-$month-01"); //get the first day of the month
+      $number_of_days = $date->format('t');
+      ?>
+            <input type="text" name="month" value="<?= $month; ?>" hidden>
+            <input type="text" name="year" value="<?= $year; ?>" hidden>
+            <input type="text" name="department_id" value="<?= $data['department_id']; ?>" hidden>
+      <thead>
+      <tr>
+      <th class="col-sm-5">Dates</th>
+      <?php
+      for($i = 1;$i <= $number_of_days;$i++){ ?>
+        <th><?= $i; ?></th>
+      <?php } ?>
+      </tr>
+
+      <!--here we print days-->
+      <tr>
+      <th class="col-sm-5">Days</th>
+      <?php
+      for($i = 1;$i <= $number_of_days;$i++){
+        $day_of_week = $date->format('w'); ?>
+
+        <th><?= get_day_of_week($day_of_week); ?></th>
+          <?php $date->modify('+1 day');
+        } ?>
+      </tr>
+    </thead>
+    <tbody>
+      <?php function get_day_of_week($index) {
+        $days = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
+        return $days[$index];
+      } ?>
+
+      <?php foreach($data['names'] as $row){ ?>
+        <tr>
+        <td class="col-sm-5"><b><?= $row->names; ?></b></td>
+        <?php 
+        for($i=1; $i<=$number_of_days; $i++){ ?>
+                    <td><input type="text" size="5" id="days" name="<?= $row->employee_id.'_'.$i; ?>" class="text-center"></td>
+        <?php } ?>
+        </tr>
+      <?php } ?> 
+     </tbody>
+         <tfoot>
+            <tr>
+            <th class="col-sm-3">Dates</th>
+            <?php
+            $date = new DateTime("$year-$month-01"); //get the first day of the month
+            $number_of_days = $date->format('t');
+            for($i = 1;$i <= $number_of_days;$i++){ ?>
+                <th><?= $i; ?></th>
+            <?php } ?>
+            </tr>
+
+            <!--here we print days-->
+            <tr>
+            <th class="col-sm-3">Days</th>
+            <?php
+            for($i = 1;$i <= $number_of_days;$i++){
+                $day_of_week = $date->format('w'); ?>
+
+                <th><?= get_day_of_week($day_of_week); ?></th>
+                    <?php $date->modify('+1 day');
+                } ?>
+            </tr>
+        </tfoot>
+     </table>
+         <!-- Here we will add publish button  -->
+    </div><br />
+        <center>
+            <button type="button" class="btn btn-primary text-center" onclick="publish_roaster(event)">Publish</button>
+        </center>
+        </form>
+    </div>
+  </div>
