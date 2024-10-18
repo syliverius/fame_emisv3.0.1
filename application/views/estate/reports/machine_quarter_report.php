@@ -12,7 +12,11 @@
 
 <div class="card">
 	<div class="card-body">
+		<div style="float: right;">
+            <button type="button" class="btn btn-success" onclick="export_to_excel()"><i class="bi bi-file-excel"></i>Export</button>
+        </div>
 		<h3 class="card-title">Machines & Generators Fuel Purchases and Consumption for year <b><i><?= $year; ?></i></b></h3>
+		<input type="text" name="summary_name" id="summary_name" value="Machines & Generators Fuel Purchases and Consumption for year <?= $year; ?>" hidden>
 
 		<!-- we retrieve data from the db by quoter and must be submitted in total/select by total -->
 		<?php 
@@ -24,7 +28,7 @@
 			$data_purchase = $data_purchases->result();
 			?>
 
-		<table class="table table-bordered border-primary text-center table-hover">
+		<table class="table table-bordered border-primary text-center table-hover" id="myTable">
 			<thead class="table-danger">
 				<tr>
 					<th></th>
@@ -118,3 +122,16 @@
 		} ?>
 	</div>
 </div>
+
+<script type="text/javascript">
+    function export_to_excel(month){
+            var this_month = document.getElementById("summary_name").value;
+            // var message = this_month + ' roaster';
+            $("#myTable").table2excel({
+                exclude: ".no-export", // Add class 'no-export' to elements you want to exclude from export
+                filename: this_month, // Name of the Excel file
+                fileext: ".xls", // File extension (".xls" for Excel 2003 or older, ".xlsx" for Excel 2007 or newer)
+                preserveColors: true
+              });
+        }
+</script>

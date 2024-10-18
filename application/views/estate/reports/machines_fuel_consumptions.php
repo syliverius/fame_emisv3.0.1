@@ -11,7 +11,11 @@
 
 <div class="card">
 	<div class="card-body">
+		<div style="float: right;">
+            <button type="button" class="btn btn-success" onclick="export_to_excel()"><i class="bi bi-file-excel"></i>Export</button>
+        </div>
 		<h3 class="card-title">Machines & Generators Fuel Consumption by year <b><i><?= $year; ?></i></b></h3>
+		<input type="text" name="summary_name" id="summary_name" value="achines & Generators Fuel Consumption by year <?= $year; ?>" hidden>
 		<?php 
 			$data_existance = $this->estate->getFuelConsumption($year);
 			if($data_existance->num_rows() > 0){ $data = $data_existance->result();
@@ -129,3 +133,21 @@
 
 	</div>
 </div>
+
+<script type="text/javascript">
+    function export_to_excel(month){
+	    var this_year_summary = document.getElementById("summary_name").value;
+	    var combinedTable = $("<table></table>");
+	    
+	    $("table").each(function() {
+	        combinedTable.append($(this).clone());
+	    });
+
+	    combinedTable.table2excel({
+	        exclude: ".no-export",  
+	        filename: this_year_summary,
+	        fileext: ".xls", 
+	        preserveColors: true 
+	    });
+    }
+</script>

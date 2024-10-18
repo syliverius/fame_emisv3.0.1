@@ -12,8 +12,13 @@
 
 <div class="card">
     <div class="card-body">
+
         <br /> <br />
-        <h3 class="card-title">Form to insert Electricity consumption for month <b><i><?= $data['month'].' , '.$data['year']; ?></i></b></h3>
+        <div style="float: right;">
+            <button type="button" class="btn btn-success" onclick="export_to_excel()"><i class="bi bi-file-excel"></i>Export</button>
+        </div>
+        <h3 class="card-title">Electricity consumption for month <b><i><?= $data['month'].' , '.$data['year']; ?></i></b></h3>
+        <input type="text" name="summary_name" id="summary_name" value="Electricity consumption for month <?= $data['month'].' , '.$data['year']; ?>" hidden>
             <?php
             $current_month = $data['month'];
             $year = $data['year'];
@@ -26,7 +31,7 @@
                 $prev_year = $year;
             }
             ?>
-            <table class="table table-bordered border-primary table-striped">
+            <table class="table table-bordered border-primary table-striped" id="myTable">
                 <thead class="text-center">
                     <tr class="table-info">
                         <th colspan="5"><?= $current_month; ?></th>
@@ -51,8 +56,8 @@
                             $prev_date = $pre->recorded_date;
                             $prev_units = $pre->units_recorded;
                         }if(!empty($current)){
-                        	$current_date = $current->recorded_date;
-                        	$current_units = $current->units_recorded;
+                            $current_date = $current->recorded_date;
+                            $current_units = $current->units_recorded;
                         } ?>
                         <tr>
                             <td rowspan="2"><?= $loc->name; ?></td>
@@ -60,12 +65,12 @@
                             <td><?= $prev_date; ?></td>
                             <td><?= $current_date; ?></td>
                             <td rowspan="2"><?php 
-                            	if($prev_units == "" || $current_units == ""){
-                            		echo "***";
-                            	}else{
-                            		echo round(($current_units-$prev_units),1);
-                            	}
-                        	?></td>
+                                if($prev_units == "" || $current_units == ""){
+                                    echo "***";
+                                }else{
+                                    echo round(($current_units-$prev_units),1);
+                                }
+                            ?></td>
                         </tr>
                         <tr>
                             <td>Units</td>
@@ -77,3 +82,16 @@
             </table>
     </div>
 </div>
+
+<script type="text/javascript">
+    function export_to_excel(month){
+            var this_month = document.getElementById("summary_name").value;
+            // var message = this_month + ' roaster';
+            $("#myTable").table2excel({
+                exclude: ".no-export", // Add class 'no-export' to elements you want to exclude from export
+                filename: this_month, // Name of the Excel file
+                fileext: ".xls", // File extension (".xls" for Excel 2003 or older, ".xlsx" for Excel 2007 or newer)
+                preserveColors: true
+              });
+        }
+</script>
