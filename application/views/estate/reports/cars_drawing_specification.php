@@ -25,6 +25,7 @@
                       <option value="<?= $car->car_id; ?>"><?= $car->name."(".$car->registration_number.")"; ?></option>
                   <?php  } ?>
                   <option value="all">ALL</option>
+
                 </select>
               </div>
 
